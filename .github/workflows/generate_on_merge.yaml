@@ -1,0 +1,33 @@
+name: Generate File on Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  generate_file:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run generate script
+        run: python generate_file.py
+
+      - name: Commit and push the generated File
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-generate file after merge [skip ci]"
+          file_pattern: generated/*.txt
