@@ -31,3 +31,4 @@ jobs:
         with:
           commit_message: "chore: auto-generate file after merge [skip ci]"
           file_pattern: generated/*.txt
+          branch: ${{ github.event.pull_request.base.ref }}
